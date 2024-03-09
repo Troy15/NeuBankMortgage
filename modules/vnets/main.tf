@@ -1,14 +1,11 @@
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_virtual_network" "vnet" {
-  count               = length(var.vnets)
-  name                = var.vnets[count.index].name
-  location            = var.location
-  address_space       = var.vnets[count.index].address_space
-  resource_group_name = var.resource_group_name
-  tags                = var.tags
+  count             = length(var.vnets)
+  name              = var.vnets[count.index].name
+  address_space     = var.vnets[count.index].address_space
+  location          = var.vnets[count.index].location  
+  tags              = var.vnets[count.index].tags      
+
+  resource_group_name = var.resource_group_name  
 
   dynamic "subnet" {
     for_each = var.vnets[count.index].subnets
