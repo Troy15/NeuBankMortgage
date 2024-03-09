@@ -8,10 +8,4 @@ resource "azurerm_storage_account" "blob" {
   account_kind             = var.blob_storages[count.index].account_kind
   access_tier              = var.blob_storages[count.index].access_tier
   tags                     = var.blob_storages[count.index].tags
-
-  network_rules {
-    default_action             = "Deny"
-    virtual_network_subnet_ids = var.subnet_ids
-    ip_rules                   = var.ip_rules
-  }
 }

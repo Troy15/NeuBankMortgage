@@ -94,8 +94,9 @@ variable "redis_caches" {
     sku_name            = string
     capacity            = number
     enable_non_ssl_port = bool
-    redis_version       = string
-    tags                = map(string)
+    public_network_access_enabled = bool
+    family              = string
+        tags                = map(string)
   }))
 }
 
@@ -126,6 +127,7 @@ variable "vnets" {
   description = "A list of virtual network specifications, each including its own location and tags"
   type = list(object({
     name          = string
+    resource_group_name = string
     address_space = list(string)
     location      = string       
     tags          = map(string)  
@@ -135,3 +137,4 @@ variable "vnets" {
     }))
   }))
 }
+

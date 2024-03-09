@@ -7,7 +7,8 @@ variable "redis_caches" {
     sku_name            = string
     capacity            = number
     enable_non_ssl_port = bool
-    redis_version       = string
-    tags                = map(string)
+    public_network_access_enabled = bool
+    family              = string
+        tags                = map(string)
   }))
 }
