@@ -1,0 +1,28 @@
+# Ignore Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Ignore Terraform plan output files
+*.tfplan
+
+# Ignore Terraform plugin files
+.terraform/
+
+# Ignore local override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore any .tfvars files that are automatically generated
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Ignore crash log files
+crash.log
+
+# Ignore any .tfstate.backup files
+*.tfstate.backup
+
+# Ignore instruction file so you're not publishing it to the world
+/Exercise-Principal Cloud Infrastructure Consultant.docx
