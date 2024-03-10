@@ -42,7 +42,7 @@ resource_groups = [
 application_insights = [
   {
     name                = "neubank-dev-appinsights-eastus-api"
-    resource_group_name = "neubank-dev-rg"
+    resource_group_name = "neubank-dev-rg-eastus-application"
     location            = "East US"
     application_type    = "web"
     tags          = { 
@@ -53,7 +53,7 @@ application_insights = [
   },
   {
     name                = "neubank-dev-appinsights-eastus-frontend"
-    resource_group_name = "neubank-dev-rg"
+    resource_group_name = "neubank-dev-rg-eastus-presentation"
     location            = "east US"
     application_type    = "web"
     tags                = {
@@ -67,84 +67,87 @@ application_insights = [
 // Networking resources
 vnets = [
   {
-    name          = "neubank-dev-vnet-eus-hub"
+    name                = "neubank-dev-vnet-eus-hub"
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
-    address_space = ["10.0.1.0/24"]
-    location      = "East US"
-    tags          = { 
-      Environment = "Dev", 
+    location            = "East US"
+    address_space       = ["10.0.1.0/24"]
+    tags                = {
+      Environment = "Dev",
       Project     = "Project1",
-      Owner       = "first.last@company.com" 
+      Owner       = "first.last@company.com"
     }
-    subnets       = [
-      {
-        name           = "subnet-unused"
-        address_prefix = "10.0.1.0/24"
-      }
-    ]
   },
   {
-    name          = "neubank-dev-vnet-eus-spoke-frontend"
+    name                = "neubank-dev-vnet-eus-spoke-frontend"
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
-    address_space = ["10.0.2.0/24"]
-    location      = "East US"
-    tags          = { 
-      Environment = "Dev", 
+    location            = "East US"
+    address_space       = ["10.0.2.0/24"]
+    tags                = {
+      Environment = "Dev",
       Project     = "Mortgage Calculator",
       Owner       = "first.last@company.com"
     }
-    subnets       = [
-      {
-        name           = "subnet-vnet-integration"
-        address_prefix = "10.0.2.0/24"
-      }
-    ]
   },
-    {
-    name          = "neubank-dev-vnet-eus-spoke-application"
+  {
+    name                = "neubank-dev-vnet-eus-spoke-application"
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
-    address_space = ["10.0.3.0/24"]
-    location      = "East US"
-    tags          = { 
-      Environment = "Dev", 
+    location            = "East US"
+    address_space       = ["10.0.3.0/24"]
+    tags                = {
+      Environment = "Dev",
       Project     = "Mortgage Calculator",
       Owner       = "first.last@company.com"
     }
-    subnets       = [
-      {
-        name           = "subnet-ase-dedicated"
-        address_prefix = "10.0.3.0/24"
-      }
-    ]
   },
-    {
-    name          = "neubank-dev-vnet-eus-spoke-privateendpoints"
+  {
+    name                = "neubank-dev-vnet-eus-spoke-privateendpoints"
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
-    address_space = ["10.0.4.0/24"]
-    location      = "East US"
-    tags          = { 
-      Environment = "Dev", 
+    location            = "East US"
+    address_space       = ["10.0.4.0/24"]
+    tags                = {
+      Environment = "Dev",
       Project     = "Mortgage Calculator",
       Owner       = "first.last@company.com"
     }
-    subnets       = [
-      {
-        name           = "subnet-privateendpoints-redis"
-        address_prefix = "10.0.4.0/28"
-      }
-    ],
-    subnets       = [
-      {
-        name           = "subnet-privateendpoints-sql"
-        address_prefix = "10.0.4.16/28"
-      }
-    ],
-    subnets       = [
-      {
-        name           = "subnet-privateendpoints-storage"
-        address_prefix = "10.0.4.32/28"
-      }
-    ]
+  }
+]
+
+subnets = [
+  {
+    vnet_name           = "neubank-dev-vnet-eus-hub"
+    name                = "subnet-unused"
+    address_prefixes    = ["10.0.1.0/24"]
+    resource_group_name = "neubank-dev-rg-eastus-connectivity"
+  },
+  {
+    vnet_name           = "neubank-dev-vnet-eus-spoke-frontend"
+    name                = "subnet-vnet-integration"
+    address_prefixes    = ["10.0.2.0/24"]
+    resource_group_name = "neubank-dev-rg-eastus-connectivity"
+  },
+  {
+    vnet_name           = "neubank-dev-vnet-eus-spoke-application"
+    name                = "subnet-ase-dedicated"
+    address_prefixes    = ["10.0.3.0/24"]
+    resource_group_name = "neubank-dev-rg-eastus-connectivity"
+  },
+  {
+    vnet_name           = "neubank-dev-vnet-eus-spoke-privateendpoints"
+    name                = "subnet-privateendpoints-redis"
+    address_prefixes    = ["10.0.4.0/28"]
+    resource_group_name = "neubank-dev-rg-eastus-connectivity"
+  },
+  {
+    vnet_name           = "neubank-dev-vnet-eus-spoke-privateendpoints"
+    name                = "subnet-privateendpoints-sql"
+    address_prefixes    = ["10.0.4.16/28"]
+    resource_group_name = "neubank-dev-rg-eastus-connectivity"
+  },
+  {
+    vnet_name           = "neubank-dev-vnet-eus-spoke-privateendpoints"
+    name                = "subnet-privateendpoints-storage"
+    address_prefixes    = ["10.0.4.32/28"]
+    resource_group_name = "neubank-dev-rg-eastus-connectivity"
   }
 ]
 
@@ -342,15 +345,15 @@ redis_caches = [
   }
 ]
 
-sql_databases = [
+sql_servers = [
   {
-    name             = "neubank-dev-sqlserver-eastus"
-    resource_group_name = "neubank-dev-rg-eastus-data"
-    location         = "East US"
-    server_name      = "neubank-dev-sqlserver"
-    database_name    = "neubank-dev-sqldb"
-    sku_name         = "S0"
-    max_size_gb      = 5
+    name                         = "neubank-dev-sqlserver-eastus"
+    resource_group_name          = "neubank-dev-rg-eastus-data"
+    location                     = "East US"
+    version                      = "12.0"
+    administrator_login          = "sqladmin"
+    administrator_login_password = "ComplexPassword!23"
+    minimum_tls_version          = "1.2"
     tags = {
       Environment = "dev",
       Project     = "NeuBank Mortgage Calculator",

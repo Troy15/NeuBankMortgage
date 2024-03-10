@@ -67,11 +67,12 @@ module "resource_groups" {
 // Azure SQL Database module
 module "sql_db" {
   source        = "./modules/sql_db"
-  sql_databases = var.sql_databases
+  sql_servers = var.sql_servers
 }
 
 // Virtual Network module
 module "vnets" {
   source      = "./modules/vnets"
   vnets       = var.vnets
+  subnets     = var.subnets
 }

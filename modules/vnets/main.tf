@@ -1,5 +1,5 @@
 resource "azurerm_virtual_network" "vnet" {
-  for_each = {for vnet in var.vnets : vnet.name => vnet}
+  for_each            = {for vnet in var.vnets : vnet.name => vnet}
 
   name                = each.value.name
   resource_group_name = each.value.resource_group_name
@@ -9,9 +9,10 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  for_each             = {for idx, vnet in var.vnets : idx => vnet for subnet in vnet.subnets : subnet.name => subnet}
+  for_each            = {for subnet in var.subnets : "${subnet.vnet_name}-${subnet.name}" => subnet}
+
   name                 = each.value.name
-  resource_group_name  = each.key.resource_group_name
-  virtual_network_name = azurerm_virtual_network.vnet[each.key.name].name
-  address_prefixes     = each.value.address_prefix
+  resource_group_name  = each.value.resource_group_name
+  virtual_network_name = each.value.vnet_name
+  address_prefixes     = each.value.address_prefixes
 }

@@ -106,33 +106,37 @@ variable "resource_groups" {
   }))
 }
 
-variable "sql_databases" {
-  description = "A list of Azure SQL Database specifications"
+variable "sql_servers" {
+  description = "A list of Azure SQL Server specifications"
   type = list(object({
-    name                = string
-    resource_group_name = string
-    location            = string
-    server_name         = string
-    database_name       = string
-    sku_name            = string
-    max_size_gb         = number
-    tags                = map(string)
+    name                         = string
+    resource_group_name          = string
+    location                     = string
+    version                      = string
+    administrator_login          = string
+    administrator_login_password = string
+    minimum_tls_version          = string
+    tags                         = map(string)
   }))
 }
 
 variable "vnets" {
-  description = "A list of virtual network specifications, each including subnets"
+  description = "A list of virtual network specifications"
   type = list(object({
-    name              = string
+    name                = string
     resource_group_name = string
-    location          = string
-    address_space     = list(string)
-    tags              = map(string)
-    subnets           = list(object({
-      name           = string
-      address_prefix = list(string)
-    }))
+    location            = string
+    address_space       = list(string)
+    tags                = map(string)
   }))
 }
 
-
+variable "subnets" {
+  description = "A list of subnet specifications, including VNet association"
+  type = list(object({
+    vnet_name           = string
+    name                = string
+    address_prefixes    = list(string)
+    resource_group_name = string
+  }))
+}
