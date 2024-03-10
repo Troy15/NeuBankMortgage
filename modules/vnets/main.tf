@@ -17,14 +17,16 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = each.value.address_prefixes
 
   dynamic "delegation" {
-    for_each = each.value.delegation != null ? [each.value.delegation] : []
+    for_each = each.value.delegations != null ? each.value.delegations : []
     content {
       name = delegation.value.name
+
       service_delegation {
         name    = delegation.value.service
-        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+        actions = delegation.value.actions
       }
     }
   }
 }
+
 

@@ -16,8 +16,13 @@ resource "azurerm_linux_web_app" "webapp" {
   location            = each.value.location
   service_plan_id     = azurerm_service_plan.plan[each.value.service_plan_id].id
 
+  # Specify the ID of the subnet dedicated to the App Service for VNet Integration
+  virtual_network_subnet_id    = each.value.subnet_id
+
   site_config {
-    always_on        = each.value.site_config.always_on
+    always_on             = each.value.site_config.always_on
+    # Enable VNet Integration by routing all traffic through the VNet
+    vnet_route_all_enabled = true 
   }
 
   app_settings = each.value.app_settings

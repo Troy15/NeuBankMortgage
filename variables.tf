@@ -1,5 +1,5 @@
 variable "app_service_plans" {
-  description = "Specifications for Azure App Service Plans"
+  description = "A list of App Service Plan specifications"
   type = list(object({
     name                = string
     resource_group_name = string
@@ -20,6 +20,7 @@ variable "linux_web_apps" {
       always_on        = bool
     })
     app_settings       = map(string)
+    subnet_id          = string  # Assuming direct VNet integration
   }))
 }
 
@@ -132,12 +133,17 @@ variable "vnets" {
 }
 
 variable "subnets" {
-  description = "A list of subnet specifications, including VNet association"
+  description = "A list of subnet specifications, including VNet association and optional delegation"
   type = list(object({
     vnet_name           = string
     name                = string
     address_prefixes    = list(string)
     resource_group_name = string
+    delegations = optional(list(object({  # Note the change to 'delegations' as a list
+      name    = string
+      service = string
+      actions = list(string)  # Assuming you might specify actions per delegation
+    })))
   }))
 }
 

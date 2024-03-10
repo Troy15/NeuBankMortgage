@@ -16,9 +16,10 @@ variable "subnets" {
     name                = string
     address_prefixes    = list(string)
     resource_group_name = string
-    delegation = optional(object({  # Make delegation optional
+    delegations = optional(list(object({  # Note the change to 'delegations' as a list
       name    = string
       service = string
-    }))
+      actions = list(string)  # Assuming you might specify actions per delegation
+    })))
   }))
 }

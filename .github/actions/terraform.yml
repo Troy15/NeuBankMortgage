@@ -1,0 +1,37 @@
+name: 'Terraform Deployment'
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  terraform:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Setup Terraform'
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.5.7 # Matching my system, this is admitedly an older version but it's what I have installed locally
+
+    - name: 'Configure Azure Credentials'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Terraform Init'
+      run: terraform init
+
+    - name: 'Terraform Validate'
+      run: terraform validate
+
+    - name: 'Terraform Plan'
+      run: terraform plan
+
+    - name: 'Terraform Apply'
+      run: terraform apply -auto-approve

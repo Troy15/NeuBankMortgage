@@ -114,26 +114,30 @@ vnets = [
 
 subnets = [
   {
-    vnet_name           = "neubank-dev-vnet-eus-hub"
-    name                = "subnet-unused"
-    address_prefixes    = ["10.0.1.0/24"]
-    resource_group_name = "neubank-dev-rg-eastus-connectivity"
-  },
-  {
     vnet_name           = "neubank-dev-vnet-eus-spoke-frontend"
-    name                = "subnet-vnet-integration"
+    name                = "subnet-appservice-vnet-integration"
     address_prefixes    = ["10.0.2.0/24"]
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
+    delegations = [
+      {
+        name    = "serverFarmsDelegation"
+        service = "Microsoft.Web/serverFarms"
+        actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/join/action"]
+      }
+    ]
   },
   {
-    vnet_name           = "neubank-dev-vnet-eus-application"
+    vnet_name           = "neubank-dev-vnet-eus-spoke-application"
     name                = "subnet-ase-dedicated"
     address_prefixes    = ["10.0.3.0/24"]
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
-    delegation = {
-      name    = "aseDelegation"
-      service = "Microsoft.Web/serverFarms"
-    }
+    delegations = [
+      {
+        name    = "hostingEnvironmentsDelegation"
+        service = "Microsoft.Web/hostingEnvironments"
+        actions = ["Microsoft.Network/virtualNetworks/subnets/join/action", "Microsoft.Network/virtualNetworks/subnets/join/action"]
+      }
+    ]
   },
   {
     vnet_name           = "neubank-dev-vnet-eus-spoke-privateendpoints"
@@ -404,11 +408,12 @@ linux_web_apps = [
       Owner       = "first.last@company.com"
     }
     service_plan_id     = "neubank-dev-asp-eastus"
+    subnet_id          = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-spoke-frontend/subnets/subnet-appservice-vnet-integration"
     site_config = {
       always_on        = true
     }
     app_settings       = {
-       "APPINSIGHTS_INSTRUMENTATIONKEY" = "instrumentation_key_for_dev_eastus" // Replace with the actual key
+       "APPINSIGHTS_INSTRUMENTATIONKEY" = "instrumentation_key_for_dev_eastus" // Replace with the actual key       
     }
   }
 ]
