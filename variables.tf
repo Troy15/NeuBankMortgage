@@ -1,12 +1,22 @@
-variable "app_services" {
-  description = "A list of Azure App Service specifications"
+variable "app_service_plans" {
+  description = "Specifications for Azure App Service Plans"
   type = list(object({
     name                = string
     resource_group_name = string
     location            = string
-    app_service_plan_id = string
+    os_type             = string
+    sku_name            = string
+  }))
+}
+
+variable "linux_web_apps" {
+  description = "A list of Azure Linux Web App specifications"
+  type = list(object({
+    name                = string
+    resource_group_name = string
+    location            = string
+    service_plan_id     = string
     site_config         = object({
-      linux_fx_version = string
       always_on        = bool
     })
     app_settings       = map(string)
@@ -22,19 +32,6 @@ variable "application_insights" {
     application_type    = string
     tags                = map(string)
   }))
-}
-
-variable "ase" {
-  description = "Specifications for the Azure App Service Environment"
-  type = object({
-    name                 = string
-    resource_group_name  = string
-    subnet_id            = string
-    pricing_tier         = string
-    front_end_scale_factor = number
-    internal_load_balancing_mode = string
-    tags                 = map(string)
-  })
 }
 
 variable "blob_storages" {
@@ -124,17 +121,18 @@ variable "sql_databases" {
 }
 
 variable "vnets" {
-  description = "A list of virtual network specifications, each including its own location and tags"
+  description = "A list of virtual network specifications, each including subnets"
   type = list(object({
-    name          = string
+    name              = string
     resource_group_name = string
-    address_space = list(string)
-    location      = string       
-    tags          = map(string)  
-    subnets       = list(object({
+    location          = string
+    address_space     = list(string)
+    tags              = map(string)
+    subnets           = list(object({
       name           = string
-      address_prefix = string
+      address_prefix = list(string)
     }))
   }))
 }
+
 

@@ -1,14 +1,14 @@
 variable "vnets" {
-  description = "A list of virtual network specifications, each including its own location and tags"
+  description = "A list of virtual network specifications, each including subnets"
   type = list(object({
-    name          = string
+    name              = string
     resource_group_name = string
-    address_space = list(string)
-    location      = string       
-    tags          = map(string)  
-    subnets       = list(object({
+    location          = string
+    address_space     = list(string)
+    tags              = map(string)
+    subnets           = list(object({
       name           = string
-      address_prefix = string
+      address_prefix = list(string)
     }))
   }))
 }

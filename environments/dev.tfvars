@@ -19,7 +19,7 @@ resource_groups = [
     }
   },
   {
-    name     = "neubank-dev-rg-eastus-presentation"
+    name     = "neubank-dev-rg-eastus-application"
     location = "East US"
     tags     = {
       Environment = "dev",
@@ -241,43 +241,64 @@ nsgs = [
   }
 ]
 
-// Finish building this out
+// Peering configuration
+// In an actual environment I wouldn't want to use the subscription ID hardcoded here, but for the sake of this example I'm doing so. 
 peerings = [
   {
-    name                    = "neubank-dev-vnet1-to-vnet2-eastus"
+    name                    = "neubank-dev-vnet-eus-hub-TO-neubank-dev-vnet-eus-spoke-frontend"
     resource_group_name     = "neubank-dev-rg-eastus-connectivity"
-    vnet_name               = "neubank-dev-vnet1"
-    peer_vnet_id            = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neubank-dev-rg/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet2"
+    vnet_name               = "neubank-dev-vnet-eus-hub"
+    peer_vnet_id            = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-spoke-frontend"
     allow_forwarded_traffic = true
     allow_vnet_access       = true
     allow_gateway_transit   = false
     use_remote_gateways     = false
   },
   {
-    name                    = "neubank-dev-vnet1-to-vnet2-eastus"
+    name                    = "neubank-dev-vnet-eus-hub-TO-neubank-dev-vnet-eus-spoke-application"
     resource_group_name     = "neubank-dev-rg-eastus-connectivity"
-    vnet_name               = "neubank-dev-vnet1"
-    peer_vnet_id            = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neubank-dev-rg/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet2"
+    vnet_name               = "neubank-dev-vnet-eus-hub"
+    peer_vnet_id            = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-spoke-application"
     allow_forwarded_traffic = true
     allow_vnet_access       = true
     allow_gateway_transit   = false
     use_remote_gateways     = false
   },
   {
-    name                    = "neubank-dev-vnet1-to-vnet2-eastus"
+    name                    = "neubank-dev-vnet-eus-hub-TO-neubank-dev-vnet-eus-spoke-privateendpoints"
     resource_group_name     = "neubank-dev-rg-eastus-connectivity"
-    vnet_name               = "neubank-dev-vnet1"
-    peer_vnet_id            = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neubank-dev-rg/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet2"
+    vnet_name               = "neubank-dev-vnet-eus-hub"
+    peer_vnet_id            = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-spoke-privateendpoints"
     allow_forwarded_traffic = true
     allow_vnet_access       = true
     allow_gateway_transit   = false
     use_remote_gateways     = false
   },
   {
-    name                    = "neubank-dev-vnet1-to-vnet2-eastus"
+    name                    = "neubank-dev-vnet-eus-spoke-frontend-TO-neubank-dev-vnet-eus-hub"
     resource_group_name     = "neubank-dev-rg-eastus-connectivity"
-    vnet_name               = "neubank-dev-vnet1"
-    peer_vnet_id            = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/neubank-dev-rg/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet2"
+    vnet_name               = "neubank-dev-vnet-eus-spoke-frontend"
+    peer_vnet_id            = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-hub"
+    allow_forwarded_traffic = true
+    allow_vnet_access       = true
+    allow_gateway_transit   = false
+    use_remote_gateways     = false
+  },
+  {
+    name                    = "neubank-dev-vnet-eus-spoke-application-TO-neubank-dev-vnet-eus-hub"
+    resource_group_name     = "neubank-dev-rg-eastus-connectivity"
+    vnet_name               = "neubank-dev-vnet-eus-spoke-application"
+    peer_vnet_id            = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-hub"
+    allow_forwarded_traffic = true
+    allow_vnet_access       = true
+    allow_gateway_transit   = false
+    use_remote_gateways     = false
+  },
+  {
+    name                    = "neubank-dev-vnet-eus-spoke-privateendpoints-TO-neubank-dev-vnet-eus-hub"
+    resource_group_name     = "neubank-dev-rg-eastus-connectivity"
+    vnet_name               = "neubank-dev-vnet-eus-spoke-privateendpoints"
+    peer_vnet_id            = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-hub"
     allow_forwarded_traffic = true
     allow_vnet_access       = true
     allow_gateway_transit   = false
@@ -338,23 +359,20 @@ sql_databases = [
   }
 ]
 
-// Application Layer (API) resources
-ase = {
-  name                        = "neubank-dev-ase-eastus"
-  resource_group_name         = "neubank-dev-rg-eastus-presentation"
-  subnet_id                   = "subnet_id_for_ase"  # Replace with the actual subnet ID
-  pricing_tier                = "I1"
-  front_end_scale_factor      = 10
-  internal_load_balancing_mode = "Web, Publishing"
-  tags = {
-    Environment = "dev",
-    Project     = "NeuBank Mortgage Calculator",
-    Owner       = "first.last@company.com"
-  }
-}
+// Application Layer (API) resources moved to locals in main.tf due to issues w/subnet id
 
 // Presentation Layer (Front End) resources
-app_services = [
+app_service_plans = [
+  {
+    name                = "neubank-dev-asp-eastus"
+    resource_group_name = "neubank-dev-rg-eastus-presentation"
+    location            = "East US"
+    os_type             = "Linux"
+    sku_name            = "P1v2"
+  }
+]
+
+linux_web_apps = [
   {
     name                = "neubank-dev-appservice-eastus"
     resource_group_name = "neubank-dev-rg-eastus-presentation"
@@ -364,9 +382,9 @@ app_services = [
       Project     = "Mortgage Calculator",
       Owner       = "first.last@company.com"
     }
-    app_service_plan_id = "neubank-dev-appsserviceplan-eastus"
-    site_config         = {
-        dotnet_framework_version = "v4.0"
+    service_plan_id     = "neubank-dev-asp-eastus"
+    site_config = {
+      always_on        = true
     }
     app_settings       = {
        "APPINSIGHTS_INSTRUMENTATIONKEY" = "instrumentation_key_for_dev_eastus" // Replace with the actual key
