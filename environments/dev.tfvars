@@ -126,10 +126,14 @@ subnets = [
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
   },
   {
-    vnet_name           = "neubank-dev-vnet-eus-spoke-application"
+    vnet_name           = "neubank-dev-vnet-eus-application"
     name                = "subnet-ase-dedicated"
     address_prefixes    = ["10.0.3.0/24"]
     resource_group_name = "neubank-dev-rg-eastus-connectivity"
+    delegation = {
+      name    = "aseDelegation"
+      service = "Microsoft.Web/serverFarms"
+    }
   },
   {
     vnet_name           = "neubank-dev-vnet-eus-spoke-privateendpoints"
@@ -362,7 +366,21 @@ sql_servers = [
   }
 ]
 
-// Application Layer (API) resources moved to locals in main.tf due to issues w/subnet id
+// Application Layer (API) resources
+ase_v3 = {
+  name                        = "neubank-dev-ase-eastus"
+  resource_group_name         = "neubank-dev-rg-eastus-presentation"
+  location              = "East US"
+  subnet_id             = "/subscriptions/57a2f443-b4b6-4d30-8ec6-7cc6b09dda92/resourceGroups/neubank-dev-rg-eastus-connectivity/providers/Microsoft.Network/virtualNetworks/neubank-dev-vnet-eus-spoke-application/subnets/subnet-ase-dedicated"
+  pricing_tier          = "IsolatedV3"
+  zone_redundant        = false
+    tags = {
+      Environment = "dev",
+      Project     = "NeuBank Mortgage Calculator",
+      Owner       = "first.last@company.com"
+    }
+}
+
 
 // Presentation Layer (Front End) resources
 app_service_plans = [

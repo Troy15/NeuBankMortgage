@@ -140,3 +140,16 @@ variable "subnets" {
     resource_group_name = string
   }))
 }
+
+variable "ase_v3" {
+  description = "Configuration for Azure App Service Environment v3"
+  type = object({
+    name                  = string
+    resource_group_name   = string
+    location              = string
+    subnet_id             = string
+    pricing_tier          = string
+    zone_redundant        = bool
+    tags                  = map(string)
+  })
+}

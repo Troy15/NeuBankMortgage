@@ -1,21 +1,3 @@
-//This might be a little sloppy, but I'm struggling to figure out a better way to pass the subnet_id to the ase module
-locals {
-  ase_configuration = {
-    name                        = "neubank-dev-ase-eastus"
-    resource_group_name         = "neubank-dev-rg-eastus-presentation"
-    location                    = "eastus"
-    subnet_id                   = module.vnets.subnet_ids["subnet-ase-dedicated"]
-    pricing_tier                = "I1"
-    front_end_scale_factor      = 10
-    internal_load_balancing_mode = "Web, Publishing"
-    tags = {
-      Environment = "dev",
-      Project     = "NeuBank Mortgage Calculator",
-      Owner       = "first.last@company.com"
-    }
-  }
-}
-
 //Replacement App Service module for Linux
 module "app_services_linux" {
   source           = "./modules/app_services_linux"
@@ -24,9 +6,10 @@ module "app_services_linux" {
 }
 
 //App Service Environment module
-module "ase" {
-  source = "./modules/ase"
-  ase    = local.ase_configuration
+module "ase_v3" {
+  source = "./modules/ase_v3"
+  ase_v3    = var.ase_v3
+  depends_on = [module.vnets]
 }
 
 // Blob Storage module
@@ -45,12 +28,14 @@ module "monitoring" {
 module "nsgs" {
   source      = "./modules/nsgs"
   nsgs        = var.nsgs
+  depends_on = [module.vnets]
 }
 
 // VNet peering module
 module "peering" {
   source      = "./modules/peering"
   peerings    = var.peerings
+  depends_on = [module.vnets]
 }
 
 // Redis Cache module

@@ -10,11 +10,15 @@ variable "vnets" {
 }
 
 variable "subnets" {
-  description = "A list of subnet specifications, including VNet association"
+  description = "A list of subnet specifications, including VNet association and optional delegation"
   type = list(object({
     vnet_name           = string
     name                = string
     address_prefixes    = list(string)
     resource_group_name = string
+    delegation = optional(object({  # Make delegation optional
+      name    = string
+      service = string
+    }))
   }))
 }
